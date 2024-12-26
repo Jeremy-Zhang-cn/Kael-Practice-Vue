@@ -1,0 +1,385 @@
+<html lang="en">
+
+<head>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="icon" href="img/ico64.ico" type="image/x-icon"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="js/vue.global.js"></script>
+
+    <title>Kael Practice</title>
+    <style>
+
+        .element {
+            margin-left: 5px;
+        }
+
+        .skill-element {
+            width: 80px;
+            height: 80px;
+            margin-left: 5px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            margin-left: 5px;
+            line-height: 1.42857143;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            -webkit-transition: border .2s ease-in-out;
+            -o-transition: border .2s ease-in-out;
+            transition: border .2s ease-in-out
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+
+<body style="background:linear-gradient(60deg, black, white)">
+
+<div id="app" class="container" style="width:30%" v-cloak>
+
+    <div style="display: flex; align-items: center; justify-content: center; margin-top: 30px;">
+        <h1>Kael</h1>
+        <h3 style="margin-left: 10px;"> - Practice </h3>
+    </div>
+
+    <div class="text-center" style="margin-top: 10px;">
+        <template v-if="!!questions && questions.length > 0">
+            <img class="question" v-for="item in questions" :src="concatImagSrc(item.thumb)" alt=""/>
+        </template>
+    </div>
+
+    <br/>
+    <br/>
+
+    <div class="text-center" style="min-width: 320px;">
+        <img v-for="item in elementList" :src="concatImagSrc(item)" class='img img-circle element' alt=""/>
+    </div>
+
+    <br/>
+
+    <div class="row  text-center" style="min-width:560px;">
+        <div class="col-sm-2 thumbnail skill-element">
+            <img src='img/ice.png' alt=""/>
+        </div>
+        <div class="col-sm-2 thumbnail skill-element">
+            <img src='img/light.png' alt=""/>
+        </div>
+        <div class="col-sm-2 thumbnail skill-element">
+            <img src='img/fire.png' alt=""/>
+        </div>
+        <div class="col-sm-2 thumbnail skill-element" v-for="item in magics">
+            <img :src="concatImagSrc(item.thumb)" alt=""/>
+        </div>
+        <div class="col-sm-2 thumbnail skill-element">
+            <img src='img/invoke.png' alt=""/>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+    const app = Vue.createApp({
+        data() {
+            return {
+                hello: 'Kael Practice',
+                // 所有技能对象列表包含合成配方和图标等信息
+                skills: [
+                    {
+                        'which': 'KeyY',
+                        'k': 'y',
+                        'code': 'qqq',
+                        'name': 'cold snap',
+                        'thumb': 'cold_snap.png'
+                    },
+                    {
+                        'which': 'KeyV',
+                        'k': 'v',
+                        'code': 'qqw',
+                        'name': 'ghost walk',
+                        'thumb': 'ghost_walk.png'
+                    },
+                    {
+                        'which': 'KeyG',
+                        'k': 'g',
+                        'code': 'qqe',
+                        'name': 'ice wall',
+                        'thumb': 'ice_wall.png'
+                    },
+                    {
+                        'which': 'KeyC',
+                        'k': 'c',
+                        'code': 'www',
+                        'name': 'emp',
+                        'thumb': 'emp.png'
+                    },
+                    {
+                        'which': 'KeyX',
+                        'k': 'x',
+                        'code': 'wwq',
+                        'name': 'tornado',
+                        'thumb': 'tornado.png'
+                    },
+                    {
+                        'which': 'KeyZ',
+                        'k': 'z',
+                        'code': 'wwe',
+                        'name': 'alacrity',
+                        'thumb': 'alacrity.png'
+                    },
+                    {
+                        'which': 'KeyT',
+                        'k': 't',
+                        'code': 'eee',
+                        'name': 'sun strike',
+                        'thumb': 'sun_strike.png'
+                    },
+                    {
+                        'which': 'KeyF',
+                        'k': 'f',
+                        'code': 'eeq',
+                        'name': 'forge spirit',
+                        'thumb': 'forge_spirit.png'
+                    },
+                    {
+                        'which': 'KeyD',
+                        'k': 'd',
+                        'code': 'eew',
+                        'name': 'chaos meteor',
+                        'thumb': 'chaos_meteor.png'
+                    },
+                    {
+                        'which': 'KeyB',
+                        'k': 'b',
+                        'code': 'qwe',
+                        'name': 'deafening blast',
+                        'thumb': 'deafening_blast.png'
+                    },
+                ],
+                magics: [{'thumb': ''}, {'thumb': ''}], // 初始技能施法队列为空 thumb保证不报错
+                questions: [], // 问题队列
+                // 所有元素
+                elements: {
+                    'KeyQ': {
+                        'which': 'KeyQ',
+                        'k': 'q',
+                        'thumb': 'ice.png'
+                    },
+                    'KeyW': {
+                        'which': 'KeyW',
+                        'k': 'w',
+                        'thumb': 'light.png'
+                    },
+                    'KeyE': {
+                        'which': 'KeyE',
+                        'k': 'e',
+                        'thumb': 'fire.png'
+                    }
+                },
+                // 用于映射元素图片名与键值
+                elementMap: {
+                    'ice.png': 'q',
+                    'light.png': 'w',
+                    'fire.png': 'e'
+                },
+                elementList: ['ice.png', 'light.png', 'fire.png'], // 当前元素图片名队列(目前身上挂的球)
+
+            }
+        },
+        methods: {
+
+            handleKeyPress(event) {
+                // 根据按下的键更新元素队列
+                const key = this.elements[event.code];
+                // 保证按下的键是三个元素对应的键(Q W E)
+                if (key !== undefined) {
+                    // 依次向前出队 从后边入队(后边的索引对应的元素替换前边的 [1]->替换[0] [2]->替换[1] .. 新键入的元素替换队尾[2]的旧元素)
+                    this.elementList[0] = this.elementList[1];
+                    this.elementList[1] = this.elementList[2];
+                    this.elementList[2] = key.thumb;
+                    return;
+                }
+
+                if (event.code === 'KeyR') //R key 如果按下的是R键 进行元素祈唤合成技能
+                {
+                    let next = this.getMagic();
+                    // 技能不存在(合成失败)直接返回
+                    if (next === undefined) return;
+                    // 合成的技能已经位于队首 直接返回
+                    if (next.code === this.magics[0].code) return;
+                    if (next.code === this.magics[1].code) {
+                        // 合成的技能已经位于队尾 交换已存在的两技能位置
+                        next = this.magics[0];
+                        this.magics[0] = this.magics[1];
+                        this.magics[1] = next;
+                    } else {
+                        // 技能正常入队 新技能覆盖旧技能
+                        this.magics[1] = this.magics[0];
+                        this.magics[0] = next;
+                    }
+                }
+
+                // 键入的值既不是元素对应的Q W E键 也不是元素祈唤对应的R键 则说明要进行技能释放 校验技能按键合法性与答案的正确性
+                if (this.validateKey(event.code)) {
+                    const answer = this.validateAnswer(event.code);
+                    if (answer !== undefined) {
+                        // 回答正确 则移除队首元素(旧问题出队)
+                        this.questions.splice(answer, 1);
+                        // 入队一个新问题
+                        this.questions = [...this.questions, ...this.getRandom(1)];
+                    }
+                }
+            },
+
+            /**
+             * 随机生成count个问题
+             * @param count 要生成的问题数量
+             * @returns questions[] 问题队列数组
+             * 随机从技能列表的10个技能中抽取count个技能作为问题 -> 返回的是一个数组 即可以生成多个问题
+             */
+            getRandom(count) {
+                let cache = {},
+                    i = 0,
+                    val = [];
+                // 一直生成至问题队列的长度满足传入的count数量要求
+                while (val.length < count) {
+                    const r = Math.floor(Math.random() * 10);
+                    // 当前随机数代表的索引已经存在生成记录则跳过
+                    if (cache['m' + r] !== undefined)
+                        continue;
+                    cache['m' + r] = 1;
+                    val.push(this.skills[r]);
+                    i++;
+                }
+                return val;
+            },
+
+            /**
+             *
+             * @param keyCode 当前按下的按键code
+             * @returns {boolean} 是否合法
+             * 模拟施法过程 校验按下的按键是否存在于已经生成的技能队列的2个技能中 释放按键对应技能
+             */
+            validateKey(keyCode) {
+                for (let i = 0; i <= 1; i++) {
+                    if (this.magics[i].which === keyCode) return true;
+                }
+                return false;
+            },
+
+            /**
+             *
+             * @param keyCode 当前按下的按键code
+             * @returns {number} keyCode在问题队列中的索引值
+             * 按下的按键code等于问题队列中的首个元素说明回答正确 返回其在队列中的索引
+             */
+            validateAnswer(keyCode) {
+                const q = this.questions[0];
+                if (q.which === keyCode) return 0;
+            },
+
+            /**
+             * 合成技能
+             * 卡尔的元素祈唤在进行技能合成时只需判断身上挂的元素球是否能完全匹配上技能合成配方里的所有元素而与元素球的顺序无关(上古时期的卡尔元素祈唤真就跟球的顺序有关, 也是比较逆天了-_-!)
+             * 因此可以用indexOf()直接进行3次判断完成合成操作
+             */
+            getMagic() {
+                // 通过图片与key映射关系获取key
+                const e0 = this.elementMap[this.elementList[0]],
+                    e1 = this.elementMap[this.elementList[1]],
+                    e2 = this.elementMap[this.elementList[2]];
+                // 循环判断技能列表中的10个技能哪个符合待合成技能的元素要求
+                for (let i = 0; i < this.skills.length; i++) {
+                    // 当前技能对象 包含合成配方信息
+                    const currentMagic = this.skills[i];
+                    let tempCode = currentMagic.code;
+                    /*
+                        1. 使用indexOf()方法判断各个元素对应code在当前技能对象合成配方中的索引位置
+                            (code: w skill-recipe: qwe => index: 1);
+                        2. 挨个敲掉当前技能对象合成配方中冰、雷、火 三个元素对应的code 缩小子串长度
+                            再对子串进行相同操作 共计3次敲除操作;
+                        3. 如果indexOf()的返回值为-1代表对应字符串不存在
+                            说明当前技能对象的配方与待合成元素队列中的元素不相合直接跳过当前技能.
+                    */
+                    const i0 = tempCode.indexOf(e0);
+                    if (i0 >= 0)
+                        tempCode = this.spliceSlice(tempCode, i0, 1, undefined);
+                    else
+                        continue;
+
+                    const i1 = tempCode.indexOf(e1);
+                    if (i1 >= 0)
+                        tempCode = this.spliceSlice(tempCode, i1, 1, undefined);
+                    else
+                        continue;
+
+                    const i2 = tempCode.indexOf(e2);
+                    if (i2 >= 0)
+                        tempCode = this.spliceSlice(tempCode, i2, 1, undefined);
+                    else
+                        continue;
+                    /*
+                        如果3次敲除操作全部成功 说明当前技能的合成配方与待合成元素队列中的3个元素完全相合
+                            --> 元素祈唤成功 返回当前合成的技能
+                    */
+                    return currentMagic;
+                }
+            },
+
+            /**
+             * 在字符串中替换或删除指定位置的子字符串
+             * @param str 原始字符串
+             * @param index 待删除/替换的字符索引
+             * @param count 需要删除/替换的字符数
+             * @param add 要插入的新字符串 不传为undefine 则根据 (add || "") 会默认给一个空串
+             *                            即删除原来的从index到index+count位置上的子字符串
+             * @returns {string} 拼接后的字符串
+             *
+             * 通过slice方法将传入的字符串分为三部分:
+             * 前半部分从开始(索引为0的位置)到index
+             * 中间部分为指定的add字符串或空串
+             * 后半部分从index+count到末尾(达到删除从index[包含index位置上的这个字符串]往后count个字符串的效果)
+             *
+             * slice(i, n)方法区间为左闭右开 [i, n) 即从i到n-1 单传一个参数则是从传入的指定位置一直截到字符串末尾
+             * slice用法: https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+             */
+            spliceSlice(str, index, count, add) {
+                return str.slice(0, index) + (add || "") + str.slice(index + count);
+            },
+            /**
+             * 拼接缩略图相对路径
+             * @param thumb 包含缩略图名称的对象
+             * @returns {string} 拼接后的图片相对路径
+             */
+            concatImagSrc(thumb) {
+                return !!thumb ? ("img/" + thumb) : '';
+            },
+        },
+        computed: {},
+        created() {
+            // 页面初始化时获取一个问题
+            this.questions = this.getRandom(5);
+        },
+        mounted() {
+            // keypress事件监听 只有当按下的键能录入字符才会触发(ESC、ALT... 不会触发)
+            document.addEventListener('keypress', this.handleKeyPress);
+        },
+        updated() {
+
+        },
+        unmounted() {
+            document.removeEventListener('keypress', this.handleKeyPress);
+        },
+
+    }).mount('#app');
+
+</script>
+
+</body>
+
+</html>
