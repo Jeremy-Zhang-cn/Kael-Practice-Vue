@@ -47,7 +47,7 @@
         <h3 style="margin-left: 10px;"> - Practice </h3>
     </div>
 
-    <div class="text-center" style="margin-top: 10px;">
+    <div class="text-center" style="margin-top: 10px; min-width: 560px;">
         <template v-if="!!questions && questions.length > 0">
             <img class="question" v-for="item in questions" :src="concatImagSrc(item.thumb)" alt=""/>
         </template>
@@ -56,13 +56,13 @@
     <br/>
     <br/>
 
-    <div class="text-center" style="min-width: 320px;">
+    <div class="text-center" style="min-width: 560px;">
         <img v-for="item in elementList" :src="concatImagSrc(item)" class='img img-circle element' alt=""/>
     </div>
 
     <br/>
 
-    <div class="row  text-center" style="min-width:560px;">
+    <div class="row col-lg-offset-1 text-center" style="min-width: 560px;">
         <div class="col-sm-2 thumbnail skill-element">
             <img src='img/ice.png' alt=""/>
         </div>
